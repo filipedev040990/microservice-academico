@@ -1,9 +1,9 @@
-# Salvar dados do aluno
+# Matricular aluno
 
 > ## Caso de sucesso
 
-1. ⛔ Recebe dados de **Aluno** e **Endereço**
-2. ⛔ **Salva** os dados fornecidos em seus respectivos contextos
+1. ⛔ Salva dados do Aluno
+2. ⛔ Salva dados do Endereço
 3. ⛔ Cria matrícula do aluno
 4. ⛔ Salva dados de acesso ao "portal"
 5. ⛔ Envia email com dados de acesso ao "portal"
@@ -13,13 +13,13 @@
 
 
 > ## Objeto Aluno
-Tipo de Aluno
 Nome Completo
 E-mail
 CPF
 Telefone
 
 ## Objeto Endereço
+Id do aluno
 CEP
 Logradouro
 Número 
@@ -27,6 +27,12 @@ Complemento
 Bairro 
 Cidade 
 Estado
+
+> ## Objeto Matrícula
+Id do aluno
+Situação
+Data de liberação
+Data de bloqueio
 
 ✅
 ⛔
