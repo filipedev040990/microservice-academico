@@ -1,33 +1,6 @@
-import { Student, StudentInput } from '@/domain/entities/student'
+import { SaveStudentRepository } from '@/application/contracts/student-repository'
 import MockDate from 'mockdate'
-
-export class EnrollmentUseCase {
-  constructor (
-    private readonly studentRepository: SaveStudentRepository
-  ) {
-
-  }
-
-  async execute (input: StudentInput): Promise<void> {
-    const student = new Student(input)
-    await this.studentRepository.save(student)
-  }
-}
-
-export interface SaveStudentRepository {
-  save(input: SaveStudentRepository.Input): Promise<void>
-}
-
-export namespace SaveStudentRepository {
-  export type Input = {
-    id: string
-    name: string
-    email: string
-    document: string
-    phone: string
-    created_at: Date
-  }
-}
+import { EnrollmentUseCase } from './enrollment'
 
 const studentRepository: jest.Mocked<SaveStudentRepository> = {
   save: jest.fn()
