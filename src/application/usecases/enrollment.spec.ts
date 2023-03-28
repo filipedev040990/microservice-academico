@@ -7,9 +7,11 @@ const studentRepository: jest.Mocked<SaveStudentRepository> = {
 }
 
 describe('Enrollment', () => {
-  let input: any
+  let input: EnrollmentUseCase.Input
+  let sut: EnrollmentUseCase
   beforeAll(() => {
     MockDate.set(new Date())
+    sut = new EnrollmentUseCase(studentRepository)
     input = {
       student: {
         id: 'anyStudentId',
@@ -24,9 +26,7 @@ describe('Enrollment', () => {
     MockDate.reset()
   })
   test('should call StudentRepository.save once and with correct values', async () => {
-    const sut = new EnrollmentUseCase(studentRepository)
-
-    await sut.execute(input.student)
+    await sut.execute(input)
 
     expect(studentRepository.save).toHaveBeenCalledTimes(1)
     expect(studentRepository.save).toHaveBeenCalledWith({

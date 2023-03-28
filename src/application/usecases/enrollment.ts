@@ -8,8 +8,14 @@ export class EnrollmentUseCase {
 
   }
 
-  async execute (input: StudentInput): Promise<void> {
-    const student = new Student(input)
+  async execute (input: EnrollmentUseCase.Input): Promise<void> {
+    const student = new Student(input.student)
     await this.studentRepository.save(student)
+  }
+}
+
+export namespace EnrollmentUseCase {
+  export type Input = {
+    student: StudentInput
   }
 }
