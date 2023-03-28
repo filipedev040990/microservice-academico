@@ -1,7 +1,7 @@
-import { Address } from './address'
+import { Address, AddressInput } from './address'
 
 describe('Address', () => {
-  let input: Address.Input
+  let input: AddressInput
   beforeAll(() => {
     input = {
       id: 'anyId',
