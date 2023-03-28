@@ -1,5 +1,5 @@
 import { EnrollmentUseCase } from './enrollment'
-import { SaveAddressRepository, SaveStudentRepository } from '@/application/contracts'
+import { SaveAddressRepository, SaveEnrollmentRepository, SaveStudentRepository } from '@/application/contracts'
 import MockDate from 'mockdate'
 
 const studentRepository: jest.Mocked<SaveStudentRepository> = {
@@ -7,6 +7,10 @@ const studentRepository: jest.Mocked<SaveStudentRepository> = {
 }
 
 const addressRepository: jest.Mocked<SaveAddressRepository> = {
+  save: jest.fn()
+}
+
+const enrollmentRepository: jest.Mocked<SaveEnrollmentRepository> = {
   save: jest.fn()
 }
 
@@ -20,7 +24,7 @@ describe('Enrollment', () => {
 
   beforeAll(() => {
     MockDate.set(new Date())
-    sut = new EnrollmentUseCase(studentRepository, addressRepository)
+    sut = new EnrollmentUseCase(studentRepository, addressRepository, enrollmentRepository)
     input = {
       student: {
         id: 'anyStudentId',
@@ -39,6 +43,11 @@ describe('Enrollment', () => {
         district: 'anyDistrict',
         city: 'anyCity',
         state: 'anyState'
+      },
+      enrollment: {
+        id: 'anyEnrollmentId',
+        studentId: 'anyStudentId',
+        status: 'active'
       }
     }
   })
@@ -74,6 +83,19 @@ describe('Enrollment', () => {
       city: 'anyCity',
       state: 'anyState',
       created_at: new Date()
+    })
+  })
+
+  test('should call EnrollmentRepository.save once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(enrollmentRepository.save).toHaveBeenCalledTimes(1)
+    expect(enrollmentRepository.save).toHaveBeenCalledWith({
+      id: 'anyEnrollmentId',
+      studentId: 'anyStudentId',
+      status: 'active',
+      created_at: new Date(),
+      updated_at: null
     })
   })
 })
