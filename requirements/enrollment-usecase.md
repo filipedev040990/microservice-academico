@@ -34,5 +34,12 @@ Situação
 Data de liberação
 Data de bloqueio
 
+> ## Dados de acesso ao portal
+Email do aluno
+Senha
+Status
+last_acess
+
+
 ✅
 ⛔

@@ -1,6 +1,7 @@
 import { EnrollmentUseCase } from './enrollment'
 import { SaveAddressRepository, SaveEnrollmentRepository, SaveStudentRepository } from '@/application/contracts'
 import MockDate from 'mockdate'
+import { SaveAccessDataRepository } from '../contracts/access-repository'
 
 const studentRepository: jest.Mocked<SaveStudentRepository> = {
   save: jest.fn()
@@ -14,6 +15,10 @@ const enrollmentRepository: jest.Mocked<SaveEnrollmentRepository> = {
   save: jest.fn()
 }
 
+const accessRepository: jest.Mocked<SaveAccessDataRepository> = {
+  saveAccess: jest.fn()
+}
+
 describe('Enrollment', () => {
   let input: EnrollmentUseCase.Input
   let sut: EnrollmentUseCase
@@ -24,7 +29,7 @@ describe('Enrollment', () => {
 
   beforeAll(() => {
     MockDate.set(new Date())
-    sut = new EnrollmentUseCase(studentRepository, addressRepository, enrollmentRepository)
+    sut = new EnrollmentUseCase(studentRepository, addressRepository, enrollmentRepository, accessRepository)
     input = {
       student: {
         id: 'anyStudentId',
@@ -47,6 +52,12 @@ describe('Enrollment', () => {
       enrollment: {
         id: 'anyEnrollmentId',
         studentId: 'anyStudentId',
+        status: 'active'
+      },
+      accessData: {
+        id: 'anyAccessId',
+        email: 'filipe@gmail.com',
+        password: 'anyEnrollmentId@55139108020',
         status: 'active'
       }
     }
@@ -96,6 +107,20 @@ describe('Enrollment', () => {
       status: 'active',
       created_at: new Date(),
       updated_at: null
+    })
+  })
+
+  test('should call SaveAccessRepository.save once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(accessRepository.saveAccess).toHaveBeenCalledTimes(1)
+    expect(accessRepository.saveAccess).toHaveBeenCalledWith({
+      id: 'anyAccessId',
+      email: 'filipe@gmail.com',
+      password: 'anyEnrollmentId@55139108020',
+      status: 'active',
+      created_at: new Date(),
+      last_access: null
     })
   })
 })
