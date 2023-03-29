@@ -11,7 +11,7 @@ model Student {
   id         String       @unique
   name       String
   email      String       @unique
-  cpf        String       @unique
+  document   String       @unique
   phone      String
   Address    Address[]
   Enrollment Enrollment[]
