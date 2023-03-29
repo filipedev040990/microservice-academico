@@ -1,15 +1,3 @@
-export type AddressInput = {
-  id: string
-  studentId: string
-  cep: string
-  street: string
-  number: string
-  complement: string
-  district: string
-  city: string
-  state: string
-}
-
 export class Address {
   public readonly id: string
   public readonly studentId: string
@@ -22,8 +10,22 @@ export class Address {
   public readonly state: string
   public readonly created_at: Date
 
-  constructor (input: AddressInput) {
+  constructor (input: Address.Input) {
     Object.assign(this, input)
     this.created_at = new Date()
+  }
+}
+
+export namespace Address {
+  export type Input = {
+    id: string
+    studentId: string
+    cep: string
+    street: string
+    number: string
+    complement: string
+    district: string
+    city: string
+    state: string
   }
 }

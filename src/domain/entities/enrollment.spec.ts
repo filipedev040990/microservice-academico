@@ -1,8 +1,8 @@
 import MockDate from 'mockdate'
-import { Enrollment, EnrollmentInput } from './enrollment'
+import { Enrollment } from './enrollment'
 
 describe('Enrollment', () => {
-  let input: EnrollmentInput
+  let input: Enrollment.Input
   beforeAll(() => {
     MockDate.set(new Date())
     input = {

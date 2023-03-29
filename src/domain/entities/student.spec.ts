@@ -1,7 +1,7 @@
-import { Student, StudentInput } from './student'
+import { Student } from './student'
 
 describe('Student', () => {
-  let input: StudentInput
+  let input: Student.Input
 
   beforeAll(() => {
     input = {

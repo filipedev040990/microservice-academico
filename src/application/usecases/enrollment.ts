@@ -1,9 +1,9 @@
 import { SaveAddressRepository, SaveEnrollmentRepository, SaveStudentRepository } from '@/application/contracts'
-import { Address, AddressInput } from '@/domain/entities/address'
-import { Enrollment, EnrollmentInput } from '@/domain/entities/enrollment'
-import { Student, StudentInput } from '@/domain/entities/student'
-import { SaveAccessDataRepository } from '../contracts/access-repository'
-import { SendMail } from '../contracts/mail'
+import { Address } from '@/domain/entities/address'
+import { Enrollment } from '@/domain/entities/enrollment'
+import { Student } from '@/domain/entities/student'
+import { SaveAccessDataRepository } from '@/application/contracts/access-repository'
+import { SendMail } from '@/application/contracts/mail'
 import constants from '@/application/shared/constants'
 
 export class EnrollmentUseCase {
@@ -27,21 +27,29 @@ export class EnrollmentUseCase {
     const enrollment = new Enrollment(input.enrollment)
     await this.enrollmentRepository.save(enrollment)
 
-    const accessData = {
-      id: input.accessData.id,
-      email: input.accessData.email,
-      password: input.accessData.password,
-      status: input.accessData.status,
+    const accessData: SaveAccessDataRepository.Input = this.makeAccessDataInput(input.accessData)
+    await this.accessRepository.saveAccess(accessData)
+
+    const mailData: SendMail.Input = this.makeMailDataInput(input.student)
+    await this.mailService.send(mailData)
+  }
+
+  private makeAccessDataInput (input: {id: string, email: string, password: string, status: string}): SaveAccessDataRepository.Input {
+    return {
+      id: input.id,
+      email: input.email,
+      password: input.password,
+      status: input.status,
       created_at: new Date(),
       last_access: null
     }
+  }
 
-    await this.accessRepository.saveAccess(accessData)
-
-    const mailData: SendMail.Input = {
+  private makeMailDataInput (input: { name: string, email: string }): SendMail.Input {
+    return {
       to: {
-        name: student.name,
-        address: student.email
+        name: input.name,
+        address: input.email
       },
       from: {
         name: constants.mailConfig.from.name,
@@ -50,16 +58,14 @@ export class EnrollmentUseCase {
       subject: constants.mailConfig.enrollment.subject,
       html: constants.mailConfig.enrollment.html
     }
-
-    await this.mailService.send(mailData)
   }
 }
 
 export namespace EnrollmentUseCase {
   export type Input = {
-    student: StudentInput
-    address: AddressInput
-    enrollment: EnrollmentInput
+    student: Student.Input
+    address: Address.Input
+    enrollment: Enrollment.Input
     accessData: {
       id: string
       email: string
