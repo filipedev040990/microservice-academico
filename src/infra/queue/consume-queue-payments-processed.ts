@@ -8,7 +8,7 @@ export const ConsumeQueueProcessedPayments = async (): Promise<void> => {
   try {
     const queue = new RabbitmqAdapter(config.rabbitmq.uri)
     await queue.start()
-    await queue.consume('financeiro_payments_processed', async (message: any) => {
+    await queue.consume('academic_payments_processed', async (message: any) => {
       const response = JSON.parse(message.content.toString())
       const enrollmentUsecase = makeEnrollmentUseCaseFactory()
       const payload = makePayload(response)
@@ -21,7 +21,7 @@ export const ConsumeQueueProcessedPayments = async (): Promise<void> => {
 
 const makePayload = (input: any): EnrollmentUseCase.Input => {
   const studentId = crypto.randomUUID()
-  const { name, email, document, phone } = input
+  const { name, email, document, phone } = input.client
   const status = 'active'
 
   return {
@@ -35,13 +35,13 @@ const makePayload = (input: any): EnrollmentUseCase.Input => {
     address: {
       id: crypto.randomUUID(),
       studentId,
-      cep: input.address.cep,
-      street: input.address.street,
-      number: input.address.number,
-      complement: input.address.complement,
-      district: input.address.district,
-      city: input.address.city,
-      state: input.address.state
+      cep: input.client.address.cep,
+      street: input.client.address.street,
+      number: input.client.address.number,
+      complement: input.client.address.complement,
+      district: input.client.address.district,
+      city: input.client.address.city,
+      state: input.client.address.state
     },
     enrollment: {
       id: crypto.randomUUID(),

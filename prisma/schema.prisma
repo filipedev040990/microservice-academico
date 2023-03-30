@@ -16,14 +16,14 @@ model Student {
   Address    Address[]
   Enrollment Enrollment[]
   created_at DateTime
-  updated_at DateTime
+  updated_at DateTime?
 
   @@map("students")
 }
 
 model Address {
-  id         String   @unique
-  student    Student  @relation(fields: [student_id], references: [id])
+  id         String    @unique
+  student    Student   @relation(fields: [student_id], references: [id])
   student_id String
   cep        String
   street     String
@@ -33,29 +33,29 @@ model Address {
   city       String
   state      String
   created_at DateTime
-  updated_at DateTime
+  updated_at DateTime?
 
   @@map("address")
 }
 
 model Enrollment {
-  id         String   @unique
-  student    Student  @relation(fields: [student_id], references: [id])
+  id         String    @unique
+  student    Student   @relation(fields: [student_id], references: [id])
   student_id String
   status     String
   created_at DateTime
-  updated_at DateTime
+  updated_at DateTime?
 
   @@map("enrollments")
 }
 
 model Access {
-  id          String   @unique
-  email       String   @unique
+  id          String    @unique
+  email       String    @unique
   password    String
   status      String
   created_at  DateTime
-  last_access DateTime
+  last_access DateTime?
 
   @@map("access")
 }
