@@ -10,9 +10,12 @@ export const ConsumeQueueProcessedPayments = async (): Promise<void> => {
     await queue.start()
     await queue.consume('academic_payments_processed', async (message: any) => {
       const response = JSON.parse(message.content.toString())
-      const enrollmentUsecase = makeEnrollmentUseCaseFactory()
-      const payload = makePayload(response)
-      await enrollmentUsecase.execute(payload)
+
+      if (response.status === 'confirmed') {
+        const enrollmentUsecase = makeEnrollmentUseCaseFactory()
+        const payload = makePayload(response)
+        await enrollmentUsecase.execute(payload)
+      }
     })
   } catch (error) {
     console.log(error)
