@@ -13,10 +13,13 @@ export class BcryptAdapter {
 }
 
 describe('BcryptAdapter', () => {
+  let sut: BcryptAdapter
+  const salt: number = 12
+  beforeAll(() => {
+    sut = new BcryptAdapter(salt)
+  })
   test('should call BcryptAdapter.hash once and with correct values', async () => {
     const spy = jest.spyOn(bcrypt, 'hash')
-    const salt = 12
-    const sut = new BcryptAdapter(salt)
 
     await sut.hash('anyValue')
 
