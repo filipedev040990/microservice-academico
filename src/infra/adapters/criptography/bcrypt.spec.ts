@@ -1,15 +1,9 @@
 import bcrypt from 'bcrypt'
+import { BcryptAdapter } from './bcrypt'
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('anyHash')
 }))
-
-export class BcryptAdapter {
-  constructor (private readonly salt: number) {}
-  async hash (value: string): Promise<string> {
-    return await bcrypt.hash(value, this.salt)
-  }
-}
 
 describe('BcryptAdapter', () => {
   let sut: BcryptAdapter

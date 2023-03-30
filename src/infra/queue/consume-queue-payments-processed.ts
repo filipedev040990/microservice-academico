@@ -3,6 +3,7 @@ import config from '@/infra/config'
 import { makeEnrollmentUseCaseFactory } from '../factories/enrollent-usecase'
 import crypto from 'crypto'
 import { EnrollmentUseCase } from '@/application/usecases/enrollment'
+import { BcryptAdapter } from '@/infra/adapters/criptography/bcrypt'
 
 export const ConsumeQueueProcessedPayments = async (): Promise<void> => {
   try {
@@ -13,7 +14,7 @@ export const ConsumeQueueProcessedPayments = async (): Promise<void> => {
 
       if (response.status === 'confirmed') {
         const enrollmentUsecase = makeEnrollmentUseCaseFactory()
-        const payload = makePayload(response)
+        const payload = await makePayload(response)
         await enrollmentUsecase.execute(payload)
       }
     })
@@ -22,10 +23,13 @@ export const ConsumeQueueProcessedPayments = async (): Promise<void> => {
   }
 }
 
-const makePayload = (input: any): EnrollmentUseCase.Input => {
+const makePayload = async (input: any): Promise<EnrollmentUseCase.Input> => {
   const studentId = crypto.randomUUID()
   const { name, email, document, phone } = input.client
   const status = 'active'
+  const salt = 12
+  const criptography = new BcryptAdapter(salt)
+  const accessPassword = await criptography.hash(document)
 
   return {
     student: {
@@ -54,7 +58,7 @@ const makePayload = (input: any): EnrollmentUseCase.Input => {
     accessData: {
       id: crypto.randomUUID(),
       email,
-      password: document,
+      password: accessPassword,
       status
     }
   }
