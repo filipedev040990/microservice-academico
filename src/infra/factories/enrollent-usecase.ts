@@ -5,7 +5,7 @@ import { AddressRepository } from '@/infra/database/repositories/address'
 import { EnrollmentsRepository } from '@/infra/database/repositories/enrollments'
 import { StudentRepository } from '@/infra/database/repositories/student'
 
-export const enrollmentUseCaseFactory = (): EnrollmentUseCase => {
+export const makeEnrollmentUseCaseFactory = (): EnrollmentUseCase => {
   const studentRepository = new StudentRepository()
   const addressRepository = new AddressRepository()
   const enrollmentRepository = new EnrollmentsRepository()
