@@ -16,11 +16,12 @@ jest.mock('amqplib', () => ({
 
 describe('RabbitmqAdapter', () => {
   let uri: string
+  let sut: RabbitmqAdapter
   beforeAll(() => {
     uri = 'anyUri'
+    sut = new RabbitmqAdapter(uri)
   })
   test('should call connect and createChannel on instanciation', async () => {
-    const sut = new RabbitmqAdapter(uri)
     const spy = jest.spyOn(amqplib, 'connect')
 
     await sut.start()
@@ -32,8 +33,6 @@ describe('RabbitmqAdapter', () => {
   })
 
   test('should call assertQueue connect and consume with correct values', async () => {
-    const sut = new RabbitmqAdapter(uri)
-
     await sut.start()
     await sut.consume('anyQueue', async (message: any) => {})
 
