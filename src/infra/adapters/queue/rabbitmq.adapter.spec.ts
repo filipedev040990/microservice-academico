@@ -2,6 +2,7 @@ import { RabbitmqAdapter } from './rabbitmq.adapter'
 import amqplib from 'amqplib'
 
 const assertQueueMock = jest.fn()
+const ackMock = jest.fn()
 const assertExchangeMock = jest.fn()
 const consumeMock = jest.fn()
 const publishMock = jest.fn()
@@ -11,7 +12,8 @@ const createChannelMock = jest.fn().mockImplementation(() => ({
   assertExchange: assertExchangeMock,
   consume: consumeMock,
   publish: publishMock,
-  close: closeMock
+  close: closeMock,
+  ack: ackMock
 }))
 
 jest.mock('amqplib', () => ({
@@ -47,6 +49,19 @@ describe('RabbitmqAdapter', () => {
 
     expect(consumeMock).toHaveBeenCalledTimes(1)
     expect(consumeMock).toHaveBeenCalledWith('anyQueue', expect.any(Function))
+  })
+
+  test('should call ack', async () => {
+    const callback = (): void => {}
+    consumeMock.mockImplementation((queue, callback) => {
+      // eslint-disable-next-line n/no-callback-literal
+      callback('anyMessage')
+    })
+    await sut.start()
+    await sut.consume('anyQueue', callback)
+
+    expect(ackMock).toHaveBeenCalledTimes(1)
+    expect(ackMock).toHaveBeenCalledWith('anyMessage')
   })
 
   test('should call assertExchange and publish with correct values', async () => {
