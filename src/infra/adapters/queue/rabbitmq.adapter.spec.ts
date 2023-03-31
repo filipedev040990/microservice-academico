@@ -5,11 +5,13 @@ const assertQueueMock = jest.fn()
 const assertExchangeMock = jest.fn()
 const consumeMock = jest.fn()
 const publishMock = jest.fn()
+const closeMock = jest.fn()
 const createChannelMock = jest.fn().mockImplementation(() => ({
   assertQueue: assertQueueMock,
   assertExchange: assertExchangeMock,
   consume: consumeMock,
-  publish: publishMock
+  publish: publishMock,
+  close: closeMock
 }))
 
 jest.mock('amqplib', () => ({
@@ -56,5 +58,12 @@ describe('RabbitmqAdapter', () => {
 
     expect(publishMock).toHaveBeenCalledTimes(1)
     expect(publishMock).toHaveBeenCalledWith('anyExchange', 'anyRoutingKey', Buffer.from('anyMessage'))
+  })
+
+  test('should call close', async () => {
+    await sut.start()
+    await sut.close()
+
+    expect(closeMock).toHaveBeenCalledTimes(1)
   })
 })
