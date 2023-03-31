@@ -1,7 +1,13 @@
 import { RabbitmqAdapter } from './rabbitmq.adapter'
 import amqplib from 'amqplib'
 
-const createChannelMock = jest.fn()
+const assertQueueMock = jest.fn()
+const consumeMock = jest.fn()
+const createChannelMock = jest.fn().mockImplementation(() => ({
+  assertQueue: assertQueueMock,
+  consume: consumeMock
+}))
+
 jest.mock('amqplib', () => ({
   connect: jest.fn().mockImplementation(() => ({
     createChannel: createChannelMock
@@ -23,5 +29,18 @@ describe('RabbitmqAdapter', () => {
     expect(spy).toHaveBeenCalledWith(uri)
 
     expect(createChannelMock).toHaveBeenCalledTimes(1)
+  })
+
+  test('should call assertQueue connect and consume with correct values', async () => {
+    const sut = new RabbitmqAdapter(uri)
+
+    await sut.start()
+    await sut.consume('anyQueue', async (message: any) => {})
+
+    expect(assertQueueMock).toHaveBeenCalledTimes(1)
+    expect(assertQueueMock).toHaveBeenCalledWith('anyQueue', { durable: true })
+
+    expect(consumeMock).toHaveBeenCalledTimes(1)
+    expect(consumeMock).toHaveBeenCalledWith('anyQueue', expect.any(Function))
   })
 })
