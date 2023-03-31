@@ -12,6 +12,9 @@ jest.mock('nodemailer', () => ({
 
 describe('MailService', () => {
   let input: SendMail.Input
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
   beforeAll(() => {
     input = {
       to: {
@@ -41,5 +44,14 @@ describe('MailService', () => {
         pass: process.env.MAILTRAP_PASS ?? constants.mailConfig.auth.pass
       }
     })
+  })
+
+  test('should call sendMail once and with correct values', async () => {
+    const sut = new MailService()
+
+    await sut.send(input)
+
+    expect(sendMailMock).toHaveBeenCalledTimes(1)
+    expect(sendMailMock).toHaveBeenCalledWith(input)
   })
 })
