@@ -4,7 +4,7 @@ import { Enrollment } from '@/domain/entities/enrollment'
 import { Student } from '@/domain/entities/student'
 import { SaveAccessDataRepository } from '@/application/contracts/access-repository'
 import { SendMail } from '@/application/contracts/mail'
-import constants from '@/application/shared/constants'
+import constants from '@/shared/constants'
 
 export class EnrollmentUseCase {
   constructor (

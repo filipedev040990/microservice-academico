@@ -1,7 +1,7 @@
 import { SendMail } from '@/application/contracts/mail'
 import Mail from 'nodemailer/lib/mailer'
 import nodemailer from 'nodemailer'
-import constants from '@/application/shared/constants'
+import constants from '@/shared/constants'
 
 export class MailService implements SendMail {
   private readonly transporter: Mail
@@ -18,17 +18,21 @@ export class MailService implements SendMail {
   }
 
   async send (input: SendMail.Input): Promise<void> {
-    await this.transporter.sendMail({
-      to: {
-        name: input.to.name,
-        address: input.to.address
-      },
-      from: {
-        name: input.from.name,
-        address: input.from.address
-      },
-      subject: input.subject,
-      html: input.html
-    })
+    try {
+      await this.transporter.sendMail({
+        to: {
+          name: input.to.name,
+          address: input.to.address
+        },
+        from: {
+          name: input.from.name,
+          address: input.from.address
+        },
+        subject: input.subject,
+        html: input.html
+      })
+    } catch (error) {
+      throw Error(error)
+    }
   }
 }

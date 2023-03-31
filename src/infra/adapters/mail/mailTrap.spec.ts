@@ -1,7 +1,7 @@
 import { SendMail } from '@/application/contracts/mail'
 import { MailService } from './mailTrap'
 import nodemailer from 'nodemailer'
-import constants from '@/application/shared/constants'
+import constants from '@/shared/constants'
 
 const sendMailMock = jest.fn()
 jest.mock('nodemailer', () => ({
@@ -53,5 +53,16 @@ describe('MailService', () => {
 
     expect(sendMailMock).toHaveBeenCalledTimes(1)
     expect(sendMailMock).toHaveBeenCalledWith(input)
+  })
+
+  test('should throw if nodemailer throws', async () => {
+    sendMailMock.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const sut = new MailService()
+
+    const promise = sut.send(input)
+
+    await expect(promise).rejects.toThrowError()
   })
 })
